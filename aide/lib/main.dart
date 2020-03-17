@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:aide/auth.dart';
 import 'package:aide/task.dart';
+import 'package:aide/login.dart';
+import 'package:aide/Create.dart';
+import 'package:aide/list.dart';
 
 void main() => runApp(TODOApp());
 
@@ -24,6 +29,8 @@ class TODO extends StatefulWidget {
 class TODOState extends State<TODO> {
   // Creating a list of tasks with some fake data
   final List<Task> tasks = [];
+  final Authentication auth = new Authentication();
+  FirebaseUser user;
 
   // Function that modifies the state when a new task is created
   void onTaskCreated(String name) {
@@ -38,6 +45,12 @@ class TODOState extends State<TODO> {
   void onTaskToggled(Task task) {
     setState(() {
       task.setCompleted(!task.isCompleted());
+    });
+  }
+
+  void onLogin(FirebaseUser user) {
+    setState(() {
+        this.user = user;
     });
   }
 
@@ -64,93 +77,13 @@ class TODOState extends State<TODO> {
       initialRoute: '/',
       routes: {
         // Screen to view tasks
-        '/': (context) => TODOList(tasks: tasks, onToggle: onTaskToggled),
+        '/': (context) => TODOLogin(onLogin: onLogin),
+        '/list': (context) => TODOList(tasks: tasks, onToggle: onTaskToggled,),
         // Screen to create tasks
         '/create': (context) => TODOCreate(
               onCreate: onTaskCreated,
             ),
       },
-    );
-  }
-}
-
-// A new widget that will render the screen to view tasks
-class TODOList extends StatelessWidget {
-  final List<Task> tasks;
-  final onToggle;
-
-  // Receiving tasks from parent widget
-  TODOList({@required this.tasks, @required this.onToggle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Aide - TODO List'),
-      ),
-      body: ListView.builder(
-          itemCount: tasks.length,
-          itemBuilder: (context, index) {
-            // Changed ListTile to CheckboxListTile to have
-            // the checkbox capability
-            return CheckboxListTile(
-              title: Text(tasks[index].getName()),
-              // Passing a value and a callback for the checkbox
-              value: tasks[index].isCompleted(),
-              // The _ in the argument list is there because onChanged expects it
-              // But we are not using it
-              onChanged: (_) => onToggle(tasks[index]),
-            );
-          }),
-
-      // Add a button to open new screen to create a new task
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, '/create'),
-        child: Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-// A new widget to render new task creation screen
-class TODOCreate extends StatefulWidget {
-  // Callback function that gets called when user submits a new task
-  final onCreate;
-
-  TODOCreate({@required this.onCreate});
-
-  @override
-  State<StatefulWidget> createState() {
-    return TODOCreateState();
-  }
-}
-
-class TODOCreateState extends State<TODOCreate> {
-  // Controller that handles the TextField
-  final TextEditingController controller = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Create a task')),
-      body: Center(
-          child: Padding(
-              padding: EdgeInsets.all(16),
-              child: TextField(
-                  // Opens the keyboard automatically
-                  autofocus: true,
-                  controller: controller,
-                  decoration:
-                      InputDecoration(labelText: 'Enter name for your task')))),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.done),
-        onPressed: () {
-          // Call the callback with the new task name
-          widget.onCreate(controller.text);
-          // Go back to list screen
-          Navigator.pop(context);
-        },
-      ),
     );
   }
 }

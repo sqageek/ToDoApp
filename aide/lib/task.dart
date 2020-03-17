@@ -1,9 +1,9 @@
 class Task{
   // Class properties
-  // Underscore makes them provate
+  // Underscore makes them private
 
   String _name;
-  bool _completed;
+  bool _completed = false;
 
   // Default constructor
   // this syntax means that it will accept a value and set it to this.name
