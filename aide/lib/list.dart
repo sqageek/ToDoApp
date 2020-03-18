@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:aide/task.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // A new widget that will render the screen to view tasks
 class TODOList extends StatelessWidget {
-  final List<Task> tasks;
-  final onToggle;
 
-  // Receiving tasks from parent widget
-  TODOList({@required this.tasks, @required this.onToggle});
+  // Setting reference to 'tasks' collection
+  final collection = Firestore.instance.collection('tasks');
 
   @override
   Widget build(BuildContext context) {
@@ -15,20 +13,31 @@ class TODOList extends StatelessWidget {
       appBar: AppBar(
         title: Text('Aide - TODO List'),
       ),
-      body: ListView.builder(
-          itemCount: tasks.length,
-          itemBuilder: (context, index) {
-            // Changed ListTile to CheckboxListTile to have
-            // the checkbox capability
-            return CheckboxListTile(
-              title: Text(tasks[index].getName()),
-              // Passing a value and a callback for the checkbox
-              value: tasks[index].isCompleted(),
-              // The _ in the argument list is there because onChanged expects it
-              // But we are not using it
-              onChanged: (_) => onToggle(tasks[index]),
-            );
-          }),
+      // Making a StreamBuilder to listen to changes in real time
+      body: StreamBuilder<QuerySnapshot>(
+          stream: collection.snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+            // Handling errors from firebase
+            if(snapshot.hasError)
+              return Text('Error: ${snapshot.error}');
+            switch (snapshot.connectionState){
+              // Disaplay if still loadig data
+              case ConnectionState.waiting: return Text('Loading...');
+              default:
+                return ListView(
+                  // Got rid of Task class
+                  children: snapshot.data.documents.map((DocumentSnapshot document){
+                    return CheckboxListTile(
+                      title: Text(document['name']),
+                      value: document['completed'],
+                      // Updating the database on task completion
+                      onChanged: (newValue) => collection.document(document.documentID).updateData({'completed': newValue})
+                      );
+                  }).toList(),
+                );
+              }
+            },
+          ),
 
       // Add a button to open new screen to create a new task
       floatingActionButton: FloatingActionButton(

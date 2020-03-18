@@ -28,25 +28,8 @@ class TODO extends StatefulWidget {
 
 class TODOState extends State<TODO> {
   // Creating a list of tasks with some fake data
-  final List<Task> tasks = [];
   final Authentication auth = new Authentication();
   FirebaseUser user;
-
-  // Function that modifies the state when a new task is created
-  void onTaskCreated(String name) {
-    // All state modifications have to be wrapped in setState
-    // This way Flutter knows that something has changed
-    setState(() {
-      tasks.add(Task(name));
-    });
-  }
-
-  // A new callback function to toggle task's completion
-  void onTaskToggled(Task task) {
-    setState(() {
-      task.setCompleted(!task.isCompleted());
-    });
-  }
 
   void onLogin(FirebaseUser user) {
     setState(() {
@@ -78,11 +61,9 @@ class TODOState extends State<TODO> {
       routes: {
         // Screen to view tasks
         '/': (context) => TODOLogin(onLogin: onLogin),
-        '/list': (context) => TODOList(tasks: tasks, onToggle: onTaskToggled,),
+        '/list': (context) => TODOList(),
         // Screen to create tasks
-        '/create': (context) => TODOCreate(
-              onCreate: onTaskCreated,
-            ),
+        '/create': (context) => TODOCreate(),
       },
     );
   }

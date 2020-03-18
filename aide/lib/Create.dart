@@ -1,13 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:aide/task.dart';
 
 // A new widget to render new task creation screen
 class TODOCreate extends StatefulWidget {
-  // Callback function that gets called when user submits a new task
-  final onCreate;
-
-  TODOCreate({@required this.onCreate});
-
   @override
   State<StatefulWidget> createState() {
     return TODOCreateState();
@@ -15,6 +10,7 @@ class TODOCreate extends StatefulWidget {
 }
 
 class TODOCreateState extends State<TODOCreate> {
+  final collection = Firestore.instance.collection('tasks');
   // Controller that handles the TextField
   final TextEditingController controller = TextEditingController();
 
@@ -29,13 +25,13 @@ class TODOCreateState extends State<TODOCreate> {
                 // Opens the keyboard automatically
                   autofocus: true,
                   controller: controller,
-                  decoration:
-                  InputDecoration(labelText: 'Enter name for your task')))),
+                  decoration: InputDecoration(
+                      labelText: 'Enter name for your task')))),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.done),
-        onPressed: () {
-          // Call the callback with the new task name
-          widget.onCreate(controller.text);
+        onPressed: () async {
+          // Create a new document
+          await collection.add({'name': controller.text, 'completed': false});
           // Go back to list screen
           Navigator.pop(context);
         },
