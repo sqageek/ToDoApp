@@ -2,6 +2,7 @@ class Task{
   // Class properties
   // Underscore makes them private
 
+  String _key;
   String _name;
   bool _completed = false;
 
@@ -11,7 +12,7 @@ class Task{
   Task(this._name);
 
   // Getter and setter for name
-
+  getKey() => this._key;
   getName() => this._name;
   setName(name) => this._name = _name;
 
