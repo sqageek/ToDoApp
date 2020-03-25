@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+class TODOList extends StatefulWidget{
+  @override
+  _TODOList createState() => _TODOList();
+}
+
 // A new widget that will render the screen to view tasks
-class TODOList extends StatelessWidget {
+//class TODOList extends State<TODOListState>
+class _TODOList extends State<TODOList>{
   // Setting reference to 'tasks' collection
   final collection = Firestore.instance.collection('tasks');
 
@@ -41,13 +48,17 @@ class TODOList extends StatelessWidget {
 
                   var s = snapshot.data.documents[index];
                   return Dismissible(
-                    key: Key(s['key']),
+                    //key: Key(s['key']),
+                      key: UniqueKey(),
                     background: Container(color: Colors.orangeAccent),
                     direction: (s['completed']
                         ? DismissDirection.horizontal
                         : null),
                     onDismissed: (direction) {
-                      snapshot.data.documents.removeAt(index);
+                        setState(() async{
+                          await collection.document(s.documentID).delete();
+                          //snapshot.data.documents.removeAt(index);
+                        });
                       Scaffold.of(context).showSnackBar(SnackBar(
                           content: Text('Task "${s['name']}" dismissed!')));
                     },
