@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-class TODOList extends StatefulWidget{
+class TODOList extends StatefulWidget {
   @override
   _TODOList createState() => _TODOList();
 }
 
 // A new widget that will render the screen to view tasks
 //class TODOList extends State<TODOListState>
-class _TODOList extends State<TODOList>{
+class _TODOList extends State<TODOList> {
   // Setting reference to 'tasks' collection
   final collection = Firestore.instance.collection('tasks');
+//  final String title;
+//  final String notes;
+//  final DateTime timestamp;
+//  final bool completed;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,8 @@ class _TODOList extends State<TODOList>{
               return ListView.separated(
                 padding: const EdgeInsets.all(4.0),
                 separatorBuilder: (context, index) => Divider(
-                  color: Colors.grey,
+                  color: Colors.blueAccent,
+                  thickness: 1.0,
                 ),
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
@@ -49,57 +53,177 @@ class _TODOList extends State<TODOList>{
                   var s = snapshot.data.documents[index];
                   return Dismissible(
                     //key: Key(s['key']),
-                      key: UniqueKey(),
+                    key: UniqueKey(),
                     background: Container(color: Colors.orangeAccent),
-                    direction: (s['completed']
-                        ? DismissDirection.horizontal
-                        : null),
+                    direction:
+                        (s['completed'] ? DismissDirection.horizontal : null),
                     onDismissed: (direction) {
-                        setState(() async{
-                          await collection.document(s.documentID).delete();
-                          //snapshot.data.documents.removeAt(index);
-                        });
+                      setState(() async {
+                        await collection.document(s.documentID).delete();
+                        //snapshot.data.documents.removeAt(index);
+                      });
                       Scaffold.of(context).showSnackBar(SnackBar(
                           content: Text('Task "${s['name']}" dismissed!')));
                     },
                     child: new GestureDetector(
-                        child: new ListTile(
-                            title: Text(
-                              '${s['name']}',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                            subtitle: Text(
-                              'Status:  ' +
-                                  '${s['completed'] ? "DONE" : "TODO"}',
-                              style: TextStyle(
-                                  color: s['completed']
-                                      ? Colors.green
-                                      : Colors.red),
-                            ),
-                            onLongPress: () {
-                              collection
-                                  .document(s.documentID)
-                                  .updateData({'completed': !s['completed']});
-                              Scaffold.of(context).showSnackBar(SnackBar(
-                                  content:
-                                    //!s['completed'] ? Text('Task "${s['name']}" marked as completed!')  : Text('Task "${s['name']}" marked as not completed!')
-                                  new RichText(
-                                    textAlign: TextAlign.center,
-                                    text: new TextSpan(
-                                      style: TextStyle(color: Colors.black),
-                                      children: <TextSpan>[
-                                        new TextSpan(text: 'Task ', style: new TextStyle(color: Colors.white)),
-                                        new TextSpan(text: '${s['name']}', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.amber)),
-                                        new TextSpan(text: ' marked as ', style: new TextStyle(color: Colors.white)),
-                                        new TextSpan(text: s['completed'] ? 'not ' : '', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
-                                        new TextSpan(text: 'completed!', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                                      ],
-                                    ),
-                                  )
-                              ));
-                            })),
-                  );
+//                        child: new ListTile(
+//                            title: Text(
+//                              '${s['name']}',
+//                              style: TextStyle(
+//                                  fontWeight: FontWeight.bold, fontSize: 18),
+//                            ),
+//                            subtitle: new RichText(
+//                              textAlign: TextAlign.left,
+//                              text: new TextSpan(
+//                                style: TextStyle(color: Colors.black),
+//                                children: <TextSpan>[
+//                                  new TextSpan(
+//                                      text: '\n' + '${s['notes']}' + '\n\n',
+//                                      style:
+//                                          new TextStyle(color: Colors.black)),
+//                                  new TextSpan(
+//                                      text: 'Status: ',
+//                                      style: new TextStyle(
+//                                          fontWeight: FontWeight.bold,
+//                                          color: Colors.teal)),
+//                                  new TextSpan(
+//                                      text: s['completed'] ? 'DONE' : '',
+//                                      style: new TextStyle(
+//                                          fontWeight: FontWeight.bold,
+//                                          color: Colors.green)),
+//                                  new TextSpan(
+//                                      text: !s['completed'] ? 'PENDING' : '',
+//                                      style: new TextStyle(
+//                                          fontWeight: FontWeight.bold,
+//                                          color: Colors.red)),
+//                                  new TextSpan(
+//                                      text: !s['completed']
+//                                          ? '             '
+//                                          : '                 '),
+//                                  new TextSpan(
+//                                      text: '${s['timestamp']}',
+//                                      style: new TextStyle(
+//                                          fontWeight: FontWeight.bold,
+//                                          color: Colors.red)),
+//                                ],
+//                              ),
+//                            ),
+//                            isThreeLine: true,
+//
+////                            isThreeLine: true,
+////                            subtitle:
+////                            new Row(
+////                              crossAxisAlignment: CrossAxisAlignment.start,
+////                              children: [
+////                                new RichText(
+////                                  textAlign: TextAlign.left,
+////                                  softWrap: true,
+////                                  text: new TextSpan(
+////                                    style: TextStyle(color: Colors.black),
+////                                    children: <TextSpan>[
+////                                      new TextSpan(text: '\n' + '${s['notes']}' + '\n\n', style: new TextStyle(color: Colors.black)),
+////                                      new TextSpan(text: 'Status: ', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.teal)),
+////                                      new TextSpan(text: s['completed'] ? 'DONE' : '', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+////                                      new TextSpan(text: !s['completed'] ? 'PENDING' : '', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+////                                    ],
+////                                  ),
+////                                ),
+////                                new RichText(text: new TextSpan(
+////                                      children: <TextSpan>[
+////                                          new TextSpan(text: '${s['timestamp']}', style: TextStyle(fontSize: 22.0,color: Colors.grey))
+////                                      ]),
+////                                    textAlign: TextAlign.right
+////                                ),
+////                              ]
+////                            ),
+//
+                      /*
+                        *  Experiment with container
+                        * */
+                      child: new  Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
+                        child: new Column(
+                            children: <Widget>[
+                              new Align (child: new Text('${s['name']}',
+                                style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 18),), //so big text
+                                alignment: FractionalOffset.topLeft,),
+//                              new Divider(color: Colors.blue,),
+                              new Align (child: new Text( (s['notes'] == null) ? '\n' : '\n' + '${s['notes']}' + '\n'),
+                                alignment: FractionalOffset.topLeft,),
+//                              new Divider(color: Colors.blue,),
+                              new Row(mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[ //add some actions, icons...etc
+                                  new Align (child: new Text("Status: ",
+                                    style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.teal),), //so big text
+                                    alignment: FractionalOffset.centerLeft,),
+                                  new Align (child: new Text(s['completed'] ? 'DONE' : '',
+                                    style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.green),), //so big text
+                                    alignment: FractionalOffset.centerLeft,),
+                                  new Align (child: new Text(!s['completed'] ? 'PENDING' : '',
+                                    style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.red),), //so big text
+                                    alignment: FractionalOffset.centerLeft,),
+                                  new Spacer(),
+                                  new Align (child: new Text((s['timestamp'] == null) ? '' : 'Due: ',
+                                    style: new TextStyle(fontWeight: FontWeight.bold, color: (s['completed'] ) ? Colors.green :  Colors.red),), //so big text
+                                    alignment: FractionalOffset.centerLeft,),
+                                  //new Align (child: new Text( (s['timestamp'] == null) ? '' : '${s['timestamp']}',
+                                  new Align (child: new Text( (s['timestamp'] == null) ? '' : new DateTime.fromMicrosecondsSinceEpoch(s['timestamp'] * 1000).toString(),
+                                    style: new TextStyle(fontWeight: FontWeight.bold, color: (s['completed'] ) ? Colors.green :  Colors.red),), //so big text
+                                    alignment: FractionalOffset.centerLeft,),
+                                ],
+                              ),
+                            ]
+                        ),
+                      ),
+                      /*
+                        *  Experiment with container
+                        * */
+
+
+                      onLongPress: () {
+                        collection
+                            .document(s.documentID)
+                            .updateData({'completed': !s['completed']});
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                            content:
+                                //!s['completed'] ? Text('Task "${s['name']}" marked as completed!')  : Text('Task "${s['name']}" marked as not completed!')
+                                new RichText(
+                          textAlign: TextAlign.center,
+                          text: new TextSpan(
+                            style: TextStyle(color: Colors.black),
+                            children: <TextSpan>[
+                              new TextSpan(
+                                  text: 'Task ',
+                                  style:
+                                      new TextStyle(color: Colors.white)),
+                              new TextSpan(
+                                  text: '${s['name']}',
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.amber)),
+                              new TextSpan(
+                                  text: ' marked as ',
+                                  style:
+                                      new TextStyle(color: Colors.white)),
+                              new TextSpan(
+                                  text: s['completed'] ? 'not ' : '',
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red)),
+                              new TextSpan(
+                                  text: 'completed!',
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
+                            ],
+                          ),
+                        )));
+                      },
+                      ),
+
+                    );
+                  //)
                 },
               );
           }

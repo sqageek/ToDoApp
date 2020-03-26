@@ -77,6 +77,7 @@ class LoginState extends State<TODOLogin> {
                   padding: EdgeInsets.only(bottom: 16),
                   child: TextField(
                     controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(), labelText: 'Email'),
                   )),
