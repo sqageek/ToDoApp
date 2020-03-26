@@ -66,121 +66,98 @@ class _TODOList extends State<TODOList> {
                           content: Text('Task "${s['name']}" dismissed!')));
                     },
                     child: new GestureDetector(
-//                        child: new ListTile(
-//                            title: Text(
-//                              '${s['name']}',
-//                              style: TextStyle(
-//                                  fontWeight: FontWeight.bold, fontSize: 18),
-//                            ),
-//                            subtitle: new RichText(
-//                              textAlign: TextAlign.left,
-//                              text: new TextSpan(
-//                                style: TextStyle(color: Colors.black),
-//                                children: <TextSpan>[
-//                                  new TextSpan(
-//                                      text: '\n' + '${s['notes']}' + '\n\n',
-//                                      style:
-//                                          new TextStyle(color: Colors.black)),
-//                                  new TextSpan(
-//                                      text: 'Status: ',
-//                                      style: new TextStyle(
-//                                          fontWeight: FontWeight.bold,
-//                                          color: Colors.teal)),
-//                                  new TextSpan(
-//                                      text: s['completed'] ? 'DONE' : '',
-//                                      style: new TextStyle(
-//                                          fontWeight: FontWeight.bold,
-//                                          color: Colors.green)),
-//                                  new TextSpan(
-//                                      text: !s['completed'] ? 'PENDING' : '',
-//                                      style: new TextStyle(
-//                                          fontWeight: FontWeight.bold,
-//                                          color: Colors.red)),
-//                                  new TextSpan(
-//                                      text: !s['completed']
-//                                          ? '             '
-//                                          : '                 '),
-//                                  new TextSpan(
-//                                      text: '${s['timestamp']}',
-//                                      style: new TextStyle(
-//                                          fontWeight: FontWeight.bold,
-//                                          color: Colors.red)),
-//                                ],
-//                              ),
-//                            ),
-//                            isThreeLine: true,
-//
-////                            isThreeLine: true,
-////                            subtitle:
-////                            new Row(
-////                              crossAxisAlignment: CrossAxisAlignment.start,
-////                              children: [
-////                                new RichText(
-////                                  textAlign: TextAlign.left,
-////                                  softWrap: true,
-////                                  text: new TextSpan(
-////                                    style: TextStyle(color: Colors.black),
-////                                    children: <TextSpan>[
-////                                      new TextSpan(text: '\n' + '${s['notes']}' + '\n\n', style: new TextStyle(color: Colors.black)),
-////                                      new TextSpan(text: 'Status: ', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.teal)),
-////                                      new TextSpan(text: s['completed'] ? 'DONE' : '', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
-////                                      new TextSpan(text: !s['completed'] ? 'PENDING' : '', style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
-////                                    ],
-////                                  ),
-////                                ),
-////                                new RichText(text: new TextSpan(
-////                                      children: <TextSpan>[
-////                                          new TextSpan(text: '${s['timestamp']}', style: TextStyle(fontSize: 22.0,color: Colors.grey))
-////                                      ]),
-////                                    textAlign: TextAlign.right
-////                                ),
-////                              ]
-////                            ),
-//
-                      /*
-                        *  Experiment with container
-                        * */
-                      child: new  Container(
+                      child: new Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 20.0),
-                        child: new Column(
+                        child: new Column(children: <Widget>[
+                          new Align(
+                            child: new Text(
+                              '${s['name']}',
+                              style: new TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ), //so big text
+                            alignment: FractionalOffset.topLeft,
+                          ),
+//                              new Divider(color: Colors.blue,),
+                          new Align(
+                            child: new Text((s['notes'] == null)
+                                ? '\n'
+                                : '\n' + '${s['notes']}' + '\n'),
+                            alignment: FractionalOffset.topLeft,
+                          ),
+//                              new Divider(color: Colors.blue,),
+                          new Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
-                              new Align (child: new Text('${s['name']}',
-                                style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 18),), //so big text
-                                alignment: FractionalOffset.topLeft,),
-//                              new Divider(color: Colors.blue,),
-                              new Align (child: new Text( (s['notes'] == null) ? '\n' : '\n' + '${s['notes']}' + '\n'),
-                                alignment: FractionalOffset.topLeft,),
-//                              new Divider(color: Colors.blue,),
-                              new Row(mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[ //add some actions, icons...etc
-                                  new Align (child: new Text("Status: ",
-                                    style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.teal),), //so big text
-                                    alignment: FractionalOffset.centerLeft,),
-                                  new Align (child: new Text(s['completed'] ? 'DONE' : '',
-                                    style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.green),), //so big text
-                                    alignment: FractionalOffset.centerLeft,),
-                                  new Align (child: new Text(!s['completed'] ? 'PENDING' : '',
-                                    style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.red),), //so big text
-                                    alignment: FractionalOffset.centerLeft,),
-                                  new Spacer(),
-                                  new Align (child: new Text((s['timestamp'] == null) ? '' : 'Due: ',
-                                    style: new TextStyle(fontWeight: FontWeight.bold, color: (s['completed'] ) ? Colors.green :  Colors.red),), //so big text
-                                    alignment: FractionalOffset.centerLeft,),
-                                  //new Align (child: new Text( (s['timestamp'] == null) ? '' : '${s['timestamp']}',
-                                  new Align (child: new Text( (s['timestamp'] == null) ? '' : new DateTime.fromMicrosecondsSinceEpoch(s['timestamp'] * 1000).toString(),
-                                    style: new TextStyle(fontWeight: FontWeight.bold, color: (s['completed'] ) ? Colors.green :  Colors.red),), //so big text
-                                    alignment: FractionalOffset.centerLeft,),
-                                ],
+                              //add some actions, icons...etc
+                              new Align(
+                                child: new Text(
+                                  "Status: ",
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.teal),
+                                ), //so big text
+                                alignment: FractionalOffset.centerLeft,
                               ),
-                            ]
-                        ),
+                              new Align(
+                                child: new Text(
+                                  s['completed'] ? 'DONE' : '',
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green),
+                                ), //so big text
+                                alignment: FractionalOffset.centerLeft,
+                              ),
+                              new Align(
+                                child: new Text(
+                                  !s['completed'] ? 'PENDING' : '',
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
+                                ), //so big text
+                                alignment: FractionalOffset.centerLeft,
+                              ),
+                              new Spacer(),
+                              new Align(
+                                child: new Text(
+                                  (s['timestamp'] == null) ? '' : 'Due: ',
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: (s['completed'])
+                                          ? Colors.green
+                                          : Colors.red),
+                                ), //so big text
+                                alignment: FractionalOffset.centerLeft,
+                              ),
+                              //new Align (child: new Text( (s['timestamp'] == null) ? '' : '${s['timestamp']}',
+                              new Align(
+                                child: new Text(
+                                  (s['timestamp'] == null)
+                                      ? ''
+                                      : new DateTime.fromMillisecondsSinceEpoch(
+                                              s['timestamp'])
+                                          .toLocal()
+                                          .toString()
+                                          .substring(
+                                              0,
+                                              DateTime.fromMillisecondsSinceEpoch(
+                                                          s['timestamp'])
+                                                      .toLocal()
+                                                      .toString()
+                                                      .length -
+                                                  4),
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: (s['completed'])
+                                          ? Colors.green
+                                          : Colors.red),
+                                ), //so big text
+                                alignment: FractionalOffset.centerLeft,
+                              ),
+                            ],
+                          ),
+                        ]),
                       ),
-                      /*
-                        *  Experiment with container
-                        * */
-
-
                       onLongPress: () {
                         collection
                             .document(s.documentID)
@@ -195,8 +172,7 @@ class _TODOList extends State<TODOList> {
                             children: <TextSpan>[
                               new TextSpan(
                                   text: 'Task ',
-                                  style:
-                                      new TextStyle(color: Colors.white)),
+                                  style: new TextStyle(color: Colors.white)),
                               new TextSpan(
                                   text: '${s['name']}',
                                   style: new TextStyle(
@@ -204,8 +180,7 @@ class _TODOList extends State<TODOList> {
                                       color: Colors.amber)),
                               new TextSpan(
                                   text: ' marked as ',
-                                  style:
-                                      new TextStyle(color: Colors.white)),
+                                  style: new TextStyle(color: Colors.white)),
                               new TextSpan(
                                   text: s['completed'] ? 'not ' : '',
                                   style: new TextStyle(
@@ -220,9 +195,8 @@ class _TODOList extends State<TODOList> {
                           ),
                         )));
                       },
-                      ),
-
-                    );
+                    ),
+                  );
                   //)
                 },
               );
