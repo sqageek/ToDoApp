@@ -41,15 +41,6 @@ class _TODOList extends State<TODOList> {
                 ),
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
-//                    return Container(
-////                      height: 50,
-////                      margin: EdgeInsets.all(1),
-////                      child: Center(
-////                          child: Text(snapshot.data.documents[index]['name'],
-////                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, fontFamily: "Open Sans"), textAlign: TextAlign.left,),),
-////                      color: (snapshot.data.documents[index]['completed'] == true)? Colors.green : Colors.orangeAccent ,
-////                    );
-
                   var s = snapshot.data.documents[index];
                   return Dismissible(
                     //key: Key(s['key']),

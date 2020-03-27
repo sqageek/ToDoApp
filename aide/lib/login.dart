@@ -65,7 +65,7 @@ class LoginState extends State<TODOLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Please Sign in'),
+        title: Text('Aide'),
       ),
       body: Padding(
           padding: EdgeInsets.all(16),
