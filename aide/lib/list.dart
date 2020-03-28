@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/rendering.dart';
 
 class TODOList extends StatefulWidget {
   const TODOList({Key key}) : super(key: key);
@@ -68,6 +69,9 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
               default:
                 return ListView.separated(
                   padding: const EdgeInsets.all(4.0),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  physics: ClampingScrollPhysics(),
                   separatorBuilder: (context, index) => Divider(
                     color: Colors.blueAccent,
                     thickness: 1.0,
@@ -153,20 +157,17 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
                                   ), //so big text
                                   alignment: FractionalOffset.centerLeft,
                                 ),
-                                //new Align (child: new Text( (s['timestamp'] == null) ? '' : '${s['timestamp']}',
                                 new Align(
                                   child: new Text(
                                     (s['timestamp'] == null)
                                         ? ''
-                                        : new DateTime
-                                                    .fromMillisecondsSinceEpoch(
-                                                s['timestamp'])
+                                        :  DateTime.parse(
+                                                s['timestamp'].toDate().toString())
                                             .toLocal()
                                             .toString()
                                             .substring(
                                                 0,
-                                                DateTime.fromMillisecondsSinceEpoch(
-                                                            s['timestamp'])
+                                                DateTime.parse(s['timestamp'].toDate().toString())
                                                         .toLocal()
                                                         .toString()
                                                         .length -
@@ -179,8 +180,10 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
                                   ), //so big text
                                   alignment: FractionalOffset.centerLeft,
                                 ),
+
                               ],
                             ),
+//                            new Divider(color: Colors.blueAccent, thickness: 1.0,),
                           ]),
                         ),
                         onLongPress: () {
