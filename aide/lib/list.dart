@@ -88,14 +88,18 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
                       direction:
                           (s['completed'] ? DismissDirection.horizontal : DismissDirection.startToEnd),
                       onDismissed: (direction) {
-                        if(!s['completed'] && direction == DismissDirection.startToEnd){
-                          confirmDismiss =  false;
-                        }
-                        else {
-                          // Do Nothing
-                        }
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text('Task "${s['name']}" dismissed!')));
+                        setState(() {
+                          if (!s['completed'] &&
+                              direction == DismissDirection.startToEnd ) {
+                            confirmDismiss = false;
+                          }
+                          else {
+                             collection.document(s.documentID).delete();
+                            confirmDismiss = true;
+                          }
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text('Task "${s['name']}" dismissed!')));
+                        });
                       },
                       confirmDismiss: (DismissDirection direction) async {
                         if(confirmDismiss){
@@ -103,10 +107,6 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
                         }
                         else
                           // Show item again
-                          setState((){
-                            //snapshot.data.documents.insert(index, s);
-                            collection.snapshots();
-                          });
                         return false;
                       },
                       child: new GestureDetector(
