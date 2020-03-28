@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
@@ -71,7 +72,7 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
                   padding: const EdgeInsets.all(4.0),
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  physics: ClampingScrollPhysics(),
+                  //physics: ClampingScrollPhysics(),
                   separatorBuilder: (context, index) => Divider(
                     color: Colors.blueAccent,
                     thickness: 1.0,
@@ -79,19 +80,34 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
                     var s = snapshot.data.documents[index];
+                    bool confirmDismiss = true;
                     return Dismissible(
-                      //key: Key(s['key']),
                       key: UniqueKey(),
+                      //key: ObjectKey(index),
                       background: Container(color: Colors.orangeAccent),
                       direction:
-                          (s['completed'] ? DismissDirection.horizontal : null),
+                          (s['completed'] ? DismissDirection.horizontal : DismissDirection.startToEnd),
                       onDismissed: (direction) {
-                        setState(() async {
-                          await collection.document(s.documentID).delete();
-                          //snapshot.data.documents.removeAt(index);
-                        });
+                        if(!s['completed'] && direction == DismissDirection.startToEnd){
+                          confirmDismiss =  false;
+                        }
+                        else {
+                          // Do Nothing
+                        }
                         Scaffold.of(context).showSnackBar(SnackBar(
                             content: Text('Task "${s['name']}" dismissed!')));
+                      },
+                      confirmDismiss: (DismissDirection direction) async {
+                        if(confirmDismiss){
+                          return true;
+                        }
+                        else
+                          // Show item again
+                          setState((){
+                            //snapshot.data.documents.insert(index, s);
+                            collection.snapshots();
+                          });
+                        return false;
                       },
                       child: new GestureDetector(
                         child: new Container(
@@ -225,7 +241,6 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
                         },
                       ),
                     );
-                    //)
                   },
                 );
             }
