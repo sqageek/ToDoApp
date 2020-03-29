@@ -38,45 +38,71 @@ class RemindCreateState extends State<RemindCreate> {
               default:
                 return new Container(
                   padding: EdgeInsets.only(bottom: 16.0),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: new Row(
-                    children: <Widget>[
-                      new Expanded(
-                        flex: 4,
-                        child: new InputDecorator(
-                          decoration: const InputDecoration(
-                            hintText: 'Choose a task',
-                            hintStyle: TextStyle(
-                              color: Colors.deepPurple,
-                              fontSize: 16.0,
-                              fontFamily: "OpenSans",
-                              fontWeight: FontWeight.normal,
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(children: <Widget>[
+                    new Container(
+                      padding: EdgeInsets.only(bottom: 10.0, top: 10.0),
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey.withOpacity(.5),
+                      child: Text("  Add Reminder Title", style: TextStyle(fontSize: 16, color: Colors.blueAccent),),
+                    ),
+                    SizedBox(height: 10),
+                    new Row(
+                      children: <Widget>[
+                        new Expanded(
+                          flex: 4,
+                          child: new InputDecorator(
+                            decoration: const InputDecoration(
+                              hintText: 'Choose a task',
+                              hintStyle: TextStyle(
+                                color: Colors.deepPurple,
+                                fontSize: 16.0,
+                                fontFamily: "OpenSans",
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            isEmpty: _task == null,
+                            child: new DropdownButton(
+                              isDense: true,
+                              items: snapshot.data.documents
+                                  .map((DocumentSnapshot document) {
+                                return new DropdownMenuItem<String>(
+                                    value: document.data['name'],
+                                    child: new Container(
+                                      child: new Text(document.data['name']),
+                                    ));
+                              }).toList(),
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  _task = newValue;
+                                });
+                              },
+                              isExpanded: true,
+                              hint: _task == ''
+                                  ? Text('Select one task...')
+                                  : Text(
+                                      _task,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                             ),
                           ),
-                          isEmpty: _task == null,
-                          child: new DropdownButton(
-                            isDense: true,
-                            items: snapshot.data.documents
-                                .map((DocumentSnapshot document) {
-                              return new DropdownMenuItem<String>(
-                                  value: document.data['name'],
-                                  child: new Container(
-                                    child: new Text(document.data['name']),
-                                  )
-                              );
-                            }).toList(),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                _task = newValue;
-                              });
-                            },
-                            isExpanded: true,
-                            hint: _task == '' ? Text('Select one task...') : Text(_task, style: TextStyle(fontWeight: FontWeight.bold),),
-                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                    SizedBox(height: 30),
+                    new Container(
+                      padding: EdgeInsets.only(bottom: 10.0, top: 10.0),
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey.withOpacity(.5),
+                      child: Text("  Reminder Details", style: TextStyle(fontSize: 16, color: Colors.blueAccent),),
+                    ),
+                    SizedBox(height: 10),
+                    new Text("DATE"),
+                    new Text("TIME"),
+                    new Text("Repeat"),
+                    new Text("Remind me before"),
+                  ]),
                 );
             }
           },
