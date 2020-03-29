@@ -21,11 +21,16 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
   ];
 
   TabController _tabController;
+  int _fabIndex, _tabIndex;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: myTabs.length, initialIndex: 0);
+    // Action Listener
+    _tabController.addListener(_getFab);
+    _fabIndex = 0;
+    _tabIndex = 0;
   }
 
   @override
@@ -36,6 +41,12 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final List<FloatingActionButton> fabs =[
+      new FloatingActionButton(child: new Icon(Icons.add), onPressed: () => Navigator.pushNamed(context, '/create'),),
+      new FloatingActionButton(child: new Icon(Icons.alarm),onPressed: () => Navigator.pushNamed(context, '/remind'),),
+      new FloatingActionButton(child: new Icon(Icons.security),onPressed: () => Navigator.pushNamed(context, '/secure'),)
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: new Text("Aide"),
@@ -47,10 +58,7 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
       // Making a StreamBuilder to listen to changes in real time
       body: getTabBarPages(),
       // Add a button to open new screen to create a new task
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, '/create'),
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: _fabIndex == 0 ? fabs[_fabIndex] : null,
     );
   }
 
@@ -250,5 +258,15 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
       Center(child:Text("Coming Soon!!! Stay Tuned!!!", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
       Center(child:Text("Coming Soon!!! Stay Tuned!!!", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
     ]);
+  }
+
+
+
+  void _getFab()
+  {
+    setState((){
+      // Enter code here
+    _fabIndex=_tabController.index;
+    });
   }
 }
