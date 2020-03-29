@@ -14,10 +14,7 @@ class RemindCreate extends StatefulWidget {
 
 class RemindCreateState extends State<RemindCreate> {
   final collection = Firestore.instance.collection('tasks');
-  // Controller that handles the TextField
-  final TextEditingController controller = TextEditingController();
-  final TextEditingController notes = TextEditingController();
-  DateTime date1;
+  String _task = 'Choose a task';
 
   @override
   Widget build(BuildContext context) {
@@ -39,106 +36,47 @@ class RemindCreateState extends State<RemindCreate> {
               case ConnectionState.waiting:
                 return Text('Loading...');
               default:
-                print(snapshot.data.documents.length);
-                return ListView.separated(
-                  padding: const EdgeInsets.all(4.0),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  separatorBuilder: (context, index) => Divider(
-                    color: Colors.blueAccent,
-                    thickness: 1.0,
+                return new Container(
+                  padding: EdgeInsets.only(bottom: 16.0),
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: new Row(
+                    children: <Widget>[
+                      new Expanded(
+                        flex: 4,
+                        child: new InputDecorator(
+                          decoration: const InputDecoration(
+                            hintText: 'Choose a task',
+                            hintStyle: TextStyle(
+                              color: Colors.deepPurple,
+                              fontSize: 16.0,
+                              fontFamily: "OpenSans",
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          isEmpty: _task == null,
+                          child: new DropdownButton(
+                            isDense: true,
+                            items: snapshot.data.documents
+                                .map((DocumentSnapshot document) {
+                              return new DropdownMenuItem<String>(
+                                  value: document.data['name'],
+                                  child: new Container(
+                                    child: new Text(document.data['name']),
+                                  )
+                              );
+                            }).toList(),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                _task = newValue;
+                              });
+                            },
+                            isExpanded: true,
+                            hint: _task == '' ? Text('Select one task...') : Text(_task, style: TextStyle(fontWeight: FontWeight.bold),),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) {
-                    var s = snapshot.data.documents[index];
-                    bool confirmDismiss = true;
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
-                      child: new Column(children: <Widget>[
-                        new Align(
-                          child: new Text(
-                            '${s['name']}',
-                            style: new TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ), //so big text
-                          alignment: FractionalOffset.topLeft,
-                        ),
-                        //                              new Divider(color: Colors.blue,),
-                        new Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            //add some actions, icons...etc
-                            new Align(
-                              child: new Text(
-                                "Status: ",
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.teal),
-                              ), //so big text
-                              alignment: FractionalOffset.centerLeft,
-                            ),
-                            new Align(
-                              child: new Text(
-                                s['completed'] ? 'DONE' : '',
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green),
-                              ), //so big text
-                              alignment: FractionalOffset.centerLeft,
-                            ),
-                            new Align(
-                              child: new Text(
-                                !s['completed'] ? 'PENDING' : '',
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red),
-                              ), //so big text
-                              alignment: FractionalOffset.centerLeft,
-                            ),
-                            new Spacer(),
-                            new Align(
-                              child: new Text(
-                                (s['timestamp'] == null) ? '' : 'Due: ',
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: (s['completed'])
-                                        ? Colors.green
-                                        : Colors.red),
-                              ), //so big text
-                              alignment: FractionalOffset.centerLeft,
-                            ),
-                            new Align(
-                              child: new Text(
-                                (s['timestamp'] == null)
-                                    ? ''
-                                    : DateTime.parse(
-                                            s['timestamp'].toDate().toString())
-                                        .toLocal()
-                                        .toString()
-                                        .substring(
-                                            0,
-                                            DateTime.parse(s['timestamp']
-                                                        .toDate()
-                                                        .toString())
-                                                    .toLocal()
-                                                    .toString()
-                                                    .length -
-                                                4),
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: (s['completed'])
-                                        ? Colors.green
-                                        : Colors.red),
-                              ), //so big text
-                              alignment: FractionalOffset.centerLeft,
-                            ),
-                          ],
-                        ),
-//                            new Divider(color: Colors.blueAccent, thickness: 1.0,),
-                      ]),
-                    );
-                  },
                 );
             }
           },
@@ -150,13 +88,13 @@ class RemindCreateState extends State<RemindCreate> {
         onPressed: () async {
           // Create a new document
           await collection.add({
-            'name': controller.text,
+            'name': '',
             'hourly': false,
             'daily': false,
             'weekly': false,
             'monthly': false,
             'yearly': false,
-            'timestamp': date1,
+            'timestamp': DateTime.now(),
             'completed': false
           });
           // Go back to list screen
