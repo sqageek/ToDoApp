@@ -1,3 +1,5 @@
+import 'package:aide/Remind.dart';
+import 'package:aide/Secure.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aide/auth.dart';
@@ -63,6 +65,8 @@ class TODOState extends State<TODO> {
         '/list': (context) => TODOList(),
         // Screen to create tasks
         '/create': (context) => TODOCreate(),
+        '/remind': (context) => RemindCreate(),
+        '/secure': (context) => SecureCreate(),
       },
     );
   }

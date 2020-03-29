@@ -58,7 +58,7 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
       // Making a StreamBuilder to listen to changes in real time
       body: getTabBarPages(),
       // Add a button to open new screen to create a new task
-      floatingActionButton: _fabIndex == 0 ? fabs[_fabIndex] : null,
+      floatingActionButton: _fabIndex >= 0 ? fabs[_fabIndex] : null,
     );
   }
 
@@ -259,8 +259,6 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
       Center(child:Text("Coming Soon!!! Stay Tuned!!!", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
     ]);
   }
-
-
 
   void _getFab()
   {
