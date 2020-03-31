@@ -21,7 +21,7 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
   ];
 
   TabController _tabController;
-  int _fabIndex, _tabIndex;
+  int _fabIndex;
 
   @override
   void initState() {
@@ -30,7 +30,6 @@ class _TODOList extends State<TODOList> with SingleTickerProviderStateMixin {
     // Action Listener
     _tabController.addListener(_getFab);
     _fabIndex = 0;
-    _tabIndex = 0;
   }
 
   @override

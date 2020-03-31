@@ -12,9 +12,35 @@ class RemindCreate extends StatefulWidget {
   }
 }
 
+MyGlobals myGlobals = new MyGlobals();
+class MyGlobals {
+  GlobalKey _scaffoldKey;
+  MyGlobals() {
+    _scaffoldKey = GlobalKey();
+  }
+  GlobalKey get scaffoldKey => _scaffoldKey;
+}
+
 class RemindCreateState extends State<RemindCreate> {
   final collection = Firestore.instance.collection('tasks');
   String _task = 'Choose a task';
+  DateTime reminderDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override didChangeDependencies() {
+    // called when InheritedWidget updates
+    // read more here https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +48,7 @@ class RemindCreateState extends State<RemindCreate> {
       appBar: AppBar(
         title: Text('Create a reminder'),
         centerTitle: true,
+        key: myGlobals.scaffoldKey,
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
@@ -36,18 +63,19 @@ class RemindCreateState extends State<RemindCreate> {
               case ConnectionState.waiting:
                 return Text('Loading...');
               default:
-                return new Container(
-                  padding: EdgeInsets.only(bottom: 16.0),
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(children: <Widget>[
-                    new Container(
+//                return Container(
+//                  padding: EdgeInsets.only(bottom: 16.0),
+//                  width: MediaQuery.of(context).size.width,
+//                  child:
+                   return Column(children: <Widget>[
+                    Container(
                       padding: EdgeInsets.only(bottom: 10.0, top: 10.0),
                       width: MediaQuery.of(context).size.width,
                       color: Colors.grey.withOpacity(.5),
                       child: Text("  Add Reminder Title", style: TextStyle(fontSize: 16, color: Colors.blueAccent),),
                     ),
                     SizedBox(height: 10),
-                    new Row(
+                    Row(
                       children: <Widget>[
                         new Expanded(
                           flex: 4,
@@ -60,6 +88,7 @@ class RemindCreateState extends State<RemindCreate> {
                                 fontFamily: "OpenSans",
                                 fontWeight: FontWeight.normal,
                               ),
+                              hintMaxLines: 2,
                             ),
                             isEmpty: _task == null,
                             child: new DropdownButton(
@@ -69,7 +98,7 @@ class RemindCreateState extends State<RemindCreate> {
                                 return new DropdownMenuItem<String>(
                                     value: document.data['name'],
                                     child: new Container(
-                                      child: new Text(document.data['name']),
+                                      child: new Text(document.data['name'],),
                                     ));
                               }).toList(),
                               onChanged: (String newValue) {
@@ -83,27 +112,45 @@ class RemindCreateState extends State<RemindCreate> {
                                   : Text(
                                       _task,
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
                                     ),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
                             ),
                           ),
+                        ),
                         ),
                       ],
                     ),
                     SizedBox(height: 30),
-                    new Container(
+                    Container(
                       padding: EdgeInsets.only(bottom: 10.0, top: 10.0),
                       width: MediaQuery.of(context).size.width,
                       color: Colors.grey.withOpacity(.5),
                       child: Text("  Reminder Details", style: TextStyle(fontSize: 16, color: Colors.blueAccent),),
                     ),
                     SizedBox(height: 10),
-                    new Text("DATE"),
+                    Text("DATE"),
+                    SizedBox(height: 10),
+                    DateTimePickerFormField(
+                        inputType: InputType.both,
+                        format: DateFormat("yyyy-MM-dd HH:mm"),
+                        editable: false,
+                        decoration: InputDecoration(
+                            labelText: 'DateTime',
+                            hasFloatingPlaceholder: false
+                        ),
+                        onChanged: (val) {
+                          setState(() => reminderDateTime = val);
+                          print('Selected date: $reminderDateTime');
+                        },
+                    ),
                     new Text("TIME"),
                     new Text("Repeat"),
                     new Text("Remind me before"),
-                  ]),
-                );
+                  ]
+                   );
+                //);
             }
           },
         ),
@@ -120,7 +167,7 @@ class RemindCreateState extends State<RemindCreate> {
             'weekly': false,
             'monthly': false,
             'yearly': false,
-            'timestamp': DateTime.now(),
+            'timestamp': reminderDateTime,
             'completed': false
           });
           // Go back to list screen

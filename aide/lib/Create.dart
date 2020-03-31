@@ -54,7 +54,6 @@ class TODOCreateState extends State<TODOCreate> {
                   ),
                   onChanged: (dt) {
                     setState(() => date1 = dt);
-                    print('Selected date: $date1');
                   },
                 ),
                 SizedBox(height: 16.0),
